@@ -9,6 +9,8 @@ namespace UmbracoYouTubeAPI.Site.Services
 {
     public class YouTubeService : IYouTubeService
     {
+        private const string baseYouTubePlaylistItemsApiUrl = "https://www.googleapis.com/youtube/v3/playlistItems?";
+
         public Playlist GetVideosByPlaylistId(string playlistId)
         {
             var parameters = new Dictionary<string, string>
@@ -20,11 +22,10 @@ namespace UmbracoYouTubeAPI.Site.Services
                 ["maxResults"] = "50"
             };
 
-            var baseUrl = "https://www.googleapis.com/youtube/v3/playlistItems?";
-            var fullUrl = GetUrlWithQuery(baseUrl, parameters);
-            var youTubePlaylist = GetYouTubePlaylist(fullUrl);
+            var fullYouTubePlaylistItemsApiUrl = GetUrlWithQuery(baseYouTubePlaylistItemsApiUrl, parameters);
+            var youTubePlaylist = GetYouTubePlaylist(fullYouTubePlaylistItemsApiUrl);
 
-            return null;
+            return youTubePlaylist;
         }
 
         private Playlist GetYouTubePlaylist(string fullUrl)
