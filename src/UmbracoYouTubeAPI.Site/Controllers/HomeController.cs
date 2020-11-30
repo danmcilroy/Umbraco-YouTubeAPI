@@ -8,7 +8,7 @@ namespace UmbracoYouTubeAPI.Site.Controller
 {
     public class HomeController : RenderMvcController
     {
-        public readonly IVideoService _videoService;
+        private readonly IVideoService _videoService;
 
         public HomeController(IVideoService videoService)
         {

@@ -7,8 +7,8 @@ namespace UmbracoYouTubeAPI.Site.Controller
 {
     public class YouTubeController : SurfaceController
     {
-        public readonly IVideoService _videoService;
-        public readonly IYouTubeService _youTubeService;
+        private readonly IVideoService _videoService;
+        private readonly IYouTubeService _youTubeService;
 
         public YouTubeController(IVideoService videoService, IYouTubeService youTubeService)
         {

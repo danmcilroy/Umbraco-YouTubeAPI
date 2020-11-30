@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Configuration;
 using System.Net.Http;
 using Newtonsoft.Json;
 using UmbracoYouTubeAPI.Site.Entities;
+using System.Web;
+using System.Web.Caching;
 
 namespace UmbracoYouTubeAPI.Site.Services
 {
@@ -12,6 +15,27 @@ namespace UmbracoYouTubeAPI.Site.Services
         private const string baseYouTubePlaylistItemsApiUrl = "https://www.googleapis.com/youtube/v3/playlistItems?";
 
         public Playlist GetVideosByPlaylistId(string playlistId)
+        {
+            var cache = HttpContext.Current.Cache;
+            var cachePlaylistKey = $"YouTubeApiPlaylistItems-{playlistId}";
+
+            var cachedYouTubePlaylist = cache.Get(cachePlaylistKey);
+            if (cachedYouTubePlaylist != null)
+            {
+                return cachedYouTubePlaylist as Playlist;
+            }
+
+            var youTubePlaylist = GetYouTubePlaylist(playlistId);
+
+            if (youTubePlaylist != null)
+            {
+                cache.Insert(cachePlaylistKey, youTubePlaylist, null, DateTime.UtcNow.AddMinutes(10), Cache.NoSlidingExpiration);
+            }
+
+            return youTubePlaylist;
+        }
+
+        private Playlist GetYouTubePlaylist(string playlistId)
         {
             var parameters = new Dictionary<string, string>
             {
@@ -23,12 +47,13 @@ namespace UmbracoYouTubeAPI.Site.Services
             };
 
             var fullYouTubePlaylistItemsApiUrl = GetUrlWithQuery(baseYouTubePlaylistItemsApiUrl, parameters);
-            var youTubePlaylist = GetYouTubePlaylist(fullYouTubePlaylistItemsApiUrl);
+            var youTubePlaylistJson = GetYouTubePlaylistFromApi(fullYouTubePlaylistItemsApiUrl);
+            var youTubePlaylist = JsonConvert.DeserializeObject<Playlist>(youTubePlaylistJson);
 
             return youTubePlaylist;
         }
 
-        private Playlist GetYouTubePlaylist(string fullUrl)
+        private string GetYouTubePlaylistFromApi(string fullUrl)
         {
             using (var client = new HttpClient())
             {
@@ -37,11 +62,11 @@ namespace UmbracoYouTubeAPI.Site.Services
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return JsonConvert.DeserializeObject<Playlist>(result);
+                    return result;
                 }
             }
 
-            return null;
+            return "";
         }
 
         private string GetUrlWithQuery(string baseUrl, IEnumerable<KeyValuePair<string, string>> parameters)
