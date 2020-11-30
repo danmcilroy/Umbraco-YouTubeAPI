@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Umbraco.Web.PublishedModels;
 using System.Configuration;
 using System.Net.Http;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UmbracoYouTubeAPI.Site.Entities;
 
@@ -26,7 +22,13 @@ namespace UmbracoYouTubeAPI.Site.Services
 
             var baseUrl = "https://www.googleapis.com/youtube/v3/playlistItems?";
             var fullUrl = GetUrlWithQuery(baseUrl, parameters);
+            var youTubePlaylist = GetYouTubePlaylist(fullUrl);
 
+            return null;
+        }
+
+        private Playlist GetYouTubePlaylist(string fullUrl)
+        {
             using (var client = new HttpClient())
             {
                 HttpResponseMessage response = client.GetAsync(fullUrl).Result;

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Web.PublishedModels;
 using Umbraco.Web;
 using UmbracoYouTubeAPI.Site.Entities;
-using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Services;
 using Umbraco.Core;
 
@@ -21,20 +19,26 @@ namespace UmbracoYouTubeAPI.Site.Services
 
         public IEnumerable<Video> GetAllVideos(UmbracoHelper umbracoHelper)
         {
-            var siteRoot = umbracoHelper.ContentAtRoot().Where(x => x.Name == "Home").FirstOrDefault();
-            var videoListPage = siteRoot.DescendantsOrSelf<VideoList>().FirstOrDefault();
+            var videoListPage = GetVideoListPage(umbracoHelper);
             var videos = videoListPage.Descendants<Video>();
 
             return videos;
+        }
+
+        public VideoList GetVideoListPage(UmbracoHelper umbracoHelper)
+        {
+            var siteRoot = umbracoHelper.ContentAtRoot().Where(x => x.Name == "Home").FirstOrDefault();
+            var videoListPage = siteRoot.DescendantsOrSelf<VideoList>().FirstOrDefault();
+
+            return videoListPage;
         }
 
         public bool UpdateVideosWithYouTubePlaylist(Playlist playlist, UmbracoHelper umbracoHelper)
         {
             if (playlist != null)
             {
-                var siteRoot = umbracoHelper.ContentAtRoot().Where(x => x.Name == "Home").FirstOrDefault();
-                var videoListPage = siteRoot.DescendantsOrSelf<VideoList>().FirstOrDefault();
-                var videos = videoListPage.Descendants();
+                var videoListPage = GetVideoListPage(umbracoHelper);
+                var videos = videoListPage.Descendants<Video>();
 
                 DeleteAllVideos(videos);
                 AddVideos(playlist, videoListPage.Id);
@@ -45,7 +49,7 @@ namespace UmbracoYouTubeAPI.Site.Services
             return false;
         }
 
-        private void DeleteAllVideos(IEnumerable<IPublishedContent> videos)
+        private void DeleteAllVideos(IEnumerable<Video> videos)
         {
             foreach (var video in videos)
             {
@@ -62,14 +66,19 @@ namespace UmbracoYouTubeAPI.Site.Services
 
             foreach (var youTubeVideo in playlist.Items)
             {
-                var video = _contentService.CreateContent(youTubeVideo.Snippet.Title, parentUdi, "video");
-
-                video.SetValue("title", youTubeVideo.Snippet.Title);
-                video.SetValue("videoThumbnailImageURL", youTubeVideo.Snippet.Thumbnails.Default.Url);
-                video.SetValue("videoLinkURL", youTubeVideo.Snippet.ResourceId.VideoUrl);
-
-                _contentService.SaveAndPublish(video);
+                CreateVideo(parentUdi, youTubeVideo.Snippet.Title, youTubeVideo.Snippet.Thumbnails.Default.Url, youTubeVideo.Snippet.ResourceId.VideoUrl);
             }
+        }
+
+        private void CreateVideo(GuidUdi parentUdi, string title, string thumbnailUrl, string videoUrl)
+        {
+            var video = _contentService.CreateContent(title, parentUdi, "video");
+
+            video.SetValue("title", title);
+            video.SetValue("videoThumbnailImageURL", thumbnailUrl);
+            video.SetValue("videoLinkURL", videoUrl);
+
+            _contentService.SaveAndPublish(video);
         }
     }
 }
