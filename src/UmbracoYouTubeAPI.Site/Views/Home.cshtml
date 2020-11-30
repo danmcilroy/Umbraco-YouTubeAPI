@@ -1,0 +1,44 @@
+﻿@model UmbracoYouTubeAPI.Site.Models.HomeViewModel
+@using UmbracoYouTubeAPI.Site.Entities;
+@{
+    Layout = "Master.cshtml";
+}
+
+<h1>@Model.Title</h1>
+
+@using (Html.BeginUmbracoForm("Update", "YouTube"))
+{
+    @Html.AntiForgeryToken()
+    <input type="submit" name="Submit" value="Refresh YouTube Playlist" />
+    <br /><br />
+}
+
+@if (Model.Videos != null && Model.Videos.Any())
+{
+    <section>
+        @foreach (var video in Model.Videos)
+        {
+            <a href="@video.VideoLinkUrl" target="_blank">
+                <img src="@video.VideoThumbnailImageUrl" />
+                <h5>@video.Title</h5>
+            </a>
+            <br /><br />
+        }
+    </section>
+}
+
+
+
+@*<section>
+        @foreach (Items video in Model.Playlist.Items)
+        {
+            var image = video.Snippet.Thumbnails.Default;
+            var videoUrl = video.Snippet.ResourceId.VideoUrl;
+
+            <a href="@videoUrl" target="_blank">
+                <img src="@image.Url" width="@image.Width" height="@image.Height" />
+                <h5>@video.Snippet.Title</h5>
+            </a>
+            <br /><br />
+        }
+    </section>*@
