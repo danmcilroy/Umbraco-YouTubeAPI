@@ -10,6 +10,7 @@ namespace UmbracoYouTubeAPI.Site.Composing
         {
             composition.Register<IVideoService, VideoService>(Lifetime.Request);
             composition.Register<IYouTubeService, YouTubeService>(Lifetime.Request);
+            composition.Register<ICacheService, CacheService>(Lifetime.Request);
         }
     }
 }

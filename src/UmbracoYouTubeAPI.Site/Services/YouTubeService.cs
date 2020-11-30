@@ -5,7 +5,6 @@ using System.Configuration;
 using System.Net.Http;
 using Newtonsoft.Json;
 using UmbracoYouTubeAPI.Site.Entities;
-using System.Web;
 using System.Web.Caching;
 
 namespace UmbracoYouTubeAPI.Site.Services
@@ -13,13 +12,18 @@ namespace UmbracoYouTubeAPI.Site.Services
     public class YouTubeService : IYouTubeService
     {
         private const string baseYouTubePlaylistItemsApiUrl = "https://www.googleapis.com/youtube/v3/playlistItems?";
+        private readonly ICacheService _cacheService;
+
+        public YouTubeService(ICacheService cacheService)
+        {
+            _cacheService = cacheService;
+        }
 
         public Playlist GetVideosByPlaylistId(string playlistId)
         {
-            var cache = HttpContext.Current.Cache;
             var cachePlaylistKey = $"YouTubeApiPlaylistItems-{playlistId}";
 
-            var cachedYouTubePlaylist = cache.Get(cachePlaylistKey);
+            var cachedYouTubePlaylist = _cacheService.Get(cachePlaylistKey);
             if (cachedYouTubePlaylist != null)
             {
                 return cachedYouTubePlaylist as Playlist;
@@ -29,7 +33,7 @@ namespace UmbracoYouTubeAPI.Site.Services
 
             if (youTubePlaylist != null)
             {
-                cache.Insert(cachePlaylistKey, youTubePlaylist, null, DateTime.UtcNow.AddMinutes(10), Cache.NoSlidingExpiration);
+                _cacheService.Insert(cachePlaylistKey, youTubePlaylist, null, DateTime.UtcNow.AddMinutes(10), Cache.NoSlidingExpiration);
             }
 
             return youTubePlaylist;

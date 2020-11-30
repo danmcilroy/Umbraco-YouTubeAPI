@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.1267
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoYouTubeAPI.Site", "UmbracoYouTubeAPI.Site\UmbracoYouTubeAPI.Site.csproj", "{D23FD3CF-1685-428A-BAF3-1B7A5C24A20A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoYouTubeAPI.Tests", "UmbracoYouTubeAPI.Tests\UmbracoYouTubeAPI.Tests.csproj", "{FA239688-CA4C-491D-BEF7-FCB0CC3C50E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{D23FD3CF-1685-428A-BAF3-1B7A5C24A20A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D23FD3CF-1685-428A-BAF3-1B7A5C24A20A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D23FD3CF-1685-428A-BAF3-1B7A5C24A20A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA239688-CA4C-491D-BEF7-FCB0CC3C50E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA239688-CA4C-491D-BEF7-FCB0CC3C50E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA239688-CA4C-491D-BEF7-FCB0CC3C50E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA239688-CA4C-491D-BEF7-FCB0CC3C50E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
